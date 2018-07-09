@@ -1,0 +1,161 @@
+<style lang="less">
+  .container{
+  	height:100%;
+  }
+  .userinfo {
+  width:100%;
+  padding:20rpx;
+  background-color: #4691dc;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  box-shadow: 0 5px 5px -5px #ccc;
+}
+
+.userinfo-avatar {
+  width: 128rpx;
+  height: 128rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+}
+
+.userinfo-nickname {
+  font-size: 24rpx;
+  color: #ccc;
+}
+
+.userInfo-label{
+  display:flex;
+  flex-direction: column;
+}
+
+.login{
+  font-size:24rpx;
+  font-weight:bold;
+  color:#facc14;
+  height:24rpx;
+  padding:0px;
+}
+
+.user-manage-list{
+  width:100%;
+}
+
+.user-manage-item{
+  width:100%;
+  height:66rpx;
+  text-align:left;
+  padding:0 20rpx;
+  border-bottom:1px solid #ccc;
+  position:relative;
+}
+
+.list-label{
+  font-size: 34rpx;
+  color:#bbb;
+  vertical-align:middle;
+  padding-left: 36px;
+}
+
+.user-manage-item .icon-xianxing_gengduo{
+  font-size:32rpx;
+  position:absolute;
+  right:50rpx;
+  top:16rpx;
+}
+
+</style>
+<template>
+  <view class="container page">
+    <view class="userinfo">
+    <block wx:if="{{!hasUserInfo}}">
+      
+    </block>
+    <block wx:else>
+      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
+      <view class="userInfo-label">
+        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+        <view class="login">
+          <text bindtap="login">登录</text><text> / 注册</text>
+        </view>
+      </view>
+    </block>
+  </view>
+  <view class='user-manage-list'>
+    <view class='user-manage-item'>
+      <i class='icon-xianxing_qianbao iconfont'></i>
+      <span class='list-label'>钱包</span>
+      <i class='icon-xianxing_gengduo iconfont'></i>
+    </view>
+    <view class='user-manage-item'>
+      <i class='icon-xianxing_gouwuche iconfont'></i>
+      <span class='list-label'>购物车</span>
+      <i class='icon-xianxing_gengduo iconfont'></i>
+    </view>
+    <view class='user-manage-item'>
+      <i class='icon-xianxing_youhuiquan iconfont'></i>
+      <span class='list-label'>优惠券</span>
+      <i class='icon-xianxing_gengduo iconfont'></i>
+    </view>
+    <view class='user-manage-item'>
+      <i class='icon-xianxing_shezhi iconfont'></i>
+      <span class='list-label'>设置</span>
+      <i class='icon-xianxing_gengduo iconfont'></i>
+    </view>
+  </view>
+  <footTab :abscan='abscan'/>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+  import StyleSheet from '../components/styleSheet'
+  import FootTab from '../components/footTab'
+  import Toast from 'wepy-com-toast'
+
+  @connect({
+  })
+
+  export default class User extends wepy.page {
+    config = {
+      navigationBarTitleText: '共享功能小程序'
+    }
+    components = {
+      toast: Toast,
+      styleSheet: StyleSheet,
+      footTab: FootTab
+    }
+
+    data = {
+      userInfo: '',
+      hasUserInfo: false,
+      abscan: ''
+    }
+
+    computed = {
+    }
+
+    methods = {
+    }
+
+    events = {
+    }
+
+    async onLoad() {
+      let self = this
+      if (!self.$parent.globalData.userInfo) {
+        const userInfo = await wepy.getUserInfo()
+        self.userInfo = userInfo ? userInfo.userInfo : {}
+        self.apply()
+        self.$parent.globalData.userInfo = userInfo ? userInfo.userInfo : ''
+      } else {
+        self.userInfo = self.$parent.globalData.userInfo
+      }
+      self.hasUserInfo = self.$parent.globalData.userInfo || ''
+      console.log(self)
+      // console.log(self.locationInfo)
+    }
+  }
+</script>

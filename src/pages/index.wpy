@@ -1,0 +1,220 @@
+<style lang="less">
+  .container{
+  	height:100%;
+  }
+  .userinfo {
+  	width:94%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .userinfo-avatar {
+    width: 60rpx;
+    height: 60rpx;
+    border-radius: 50%;
+  }
+
+  .self-search {
+    .weui-search-bar{
+      background-color: #fff;
+      border:0 none;
+      padding: 8px 4px;
+      .weui-search-bar__cancel-btn{
+        margin-left:4px;
+      }
+    }
+  }
+
+  .weui-cells {
+    position: absolute;
+    top:30px;
+    z-index: 1;
+    width: 100%;
+    margin: 0 none;
+    font-size: 12px;
+    .weui-cell {
+      padding:4px 15px;
+      position:static;
+      &:before {
+        content: " ";
+        border-top: 0 none;
+      }
+    }
+  }
+
+  .self-container{
+  	width:100%;
+  	height:auto;
+  	position:absolute;
+  	top:46px;
+  	bottom:35px;
+  	flex-grow:1;
+  }
+
+  .self-map{
+  	width:100%;
+  	height:100%;
+  	-webkit-box-flex:1;
+	-webkit-flex:auto;
+	flex:auto;
+  }
+
+  .icon-gengduo{
+  	font-size:28px;
+  }
+
+</style>
+<template>
+  <view class="container page">
+    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
+    <view class="userinfo">
+      <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
+      <view class='self-search'>
+        <view class="weui-search-bar">
+            <view class="weui-search-bar__form">
+                <view class="weui-search-bar__box">
+                    <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+                    <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" @input="inputTyping" />
+                    <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" @tap="clearInput()">
+                        <icon type="clear" size="14"></icon>
+                    </view>
+                </view>
+                <label class="weui-search-bar__label" hidden="{{inputShowed}}" @tap="showInput()">
+                    <icon class="weui-icon-search" type="search" size="14"></icon>
+                    <view class="weui-search-bar__text">搜索</view>
+                </label>
+            </view>
+            <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" @tap="hideInput()">取消</view>
+        </view>
+      </view>
+      <view class='icon iconfont icon-gengduo'></view>
+    </view>
+    <view class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}">
+      <navigator url="" class="weui-cell" hover-class="weui-cell_active">
+          <view class="weui-cell__bd">
+              <view>实时搜索文本</view>
+          </view>
+      </navigator>
+      <navigator url="" class="weui-cell" hover-class="weui-cell_active">
+          <view class="weui-cell__bd">
+              <view>实时搜索文本</view>
+          </view>
+      </navigator>
+      <navigator url="" class="weui-cell" hover-class="weui-cell_active">
+          <view class="weui-cell__bd">
+              <view>实时搜索文本</view>
+          </view>
+      </navigator>
+      <navigator url="" class="weui-cell" hover-class="weui-cell_active">
+          <view class="weui-cell__bd">
+              <view>实时搜索文本</view>
+          </view>
+      </navigator>
+    </view>
+    <view class='self-container'>
+        <view class='self-map'>
+        	<map id="map" longitude="{{locationInfo.longitude}}" latitude="{{locationInfo.latitude}}" markers="{{markers}}" scale="14" show-location style='width:100%;height:100%'></map>
+        </view>
+    </view>
+    <footTab :abscan="abscan"></footTab>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+  import StyleSheet from '../components/styleSheet'
+  import FootTab from '../components/footTab'
+  import Toast from 'wepy-com-toast'
+  import testMixin from '../mixins/test'
+
+  @connect({
+  })
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '共享功能小程序'
+    }
+    components = {
+      toast: Toast,
+      styleSheet: StyleSheet,
+      footTab: FootTab
+    }
+
+    mixins = [testMixin]
+
+    data = {
+      userInfo: {
+        nickName: '加载中...'
+      },
+      hasUserInfo: 1,
+      canIUse: wepy.canIUse('button.open-type.getUserInfo'),
+      locationInfo: {},
+      inputShowed: false,
+      inputVal: '',
+      abscan: '1',
+      markers: []
+    }
+
+    computed = {
+    }
+
+    methods = {
+      showInput () {
+        console.log('点击')
+        this.inputShowed = true
+      },
+      hideInput () {
+        this.inputVal = ''
+        this.inputShowed = false
+      },
+      clearInput () {
+        this.inputVal = ''
+      },
+      inputTyping (e) {
+        this.inputVal = e.detail.value
+      }
+    }
+
+    events = {
+      // 'index-emit': (...args) => {
+      //   let $event = args[args.length - 1]
+      //   console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+      // }
+    }
+
+    async onLoad() {
+      let self = this
+      await wepy.login()
+      if (!self.$parent.globalData.userInfo) {
+        const userInfo = await wepy.getUserInfo()
+        self.userInfo = userInfo ? userInfo.userInfo : {}
+        self.$parent.globalData.userInfo = userInfo ? userInfo.userInfo : ''
+        self.hasUserInfo = userInfo ? 1 : 0
+      } else {
+        self.userInfo = self.$parent.globalData.userInfo
+      }
+      const locationInfo = await wepy.getLocation()
+      self.markers = await self.getMarkers()
+      self.locationInfo = locationInfo
+      self.$apply()
+      console.log(self.markers)
+    }
+
+    async getMarkers() {
+      const {data} = await wepy.request('http://127.0.0.1:8360/mapInfo/getMarks')
+      const list = data.data
+      let markers = []
+      for (let i = 0; i < list.length; i++) {
+        markers.push({
+          id: i,
+          latitude: list[i].latitude,
+          longitude: list[i].longitude,
+          iconPath: '../statics/imgs/自行车小.png'
+        })
+      }
+      return markers
+    }
+  }
+</script>

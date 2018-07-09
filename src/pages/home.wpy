@@ -1,0 +1,203 @@
+<style lang="less">
+  .container{
+  	height:100%;
+  }
+  .main-slider{
+    height:auto;
+    width:100%;
+  }
+  .advanced{
+    width:100%;
+    .advanced-one{
+        height: 120px;
+        width:100%;
+        border-top:1rpx solid #ccc;
+        border-left: 1rpx solid #ccc;
+        display: flex;
+        .left{
+            width:50%;
+            text-align:center;
+            border-right:1rpx solid #ccc;
+            display: flex;
+            flex-direction:column;
+            align-items: center;
+            justify-content: center;
+        }
+        .right {
+            width:auto;
+            text-align:center;
+            flex: 1;
+            border-right:1rpx solid #ccc;
+            view{
+              height:50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-right:1rpx solid #ccc;
+              border-bottom:1rpx solid #ccc;
+              &:last-of-type {
+                border-bottom: 0 none;
+              }
+            }
+        }
+    }
+    .advanced-two{
+      height: 200px;
+      border-top:1rpx solid #ccc;
+      border-left: 1rpx solid #ccc;
+      display: flex;
+      .left{
+        width:100px;
+        text-align:center;
+        border-right:1rpx solid #ccc;
+        display: flex;
+        flex-direction:column;
+        align-items: center;
+        justify-content: center;
+      }
+      .right{
+        width:auto;
+        flex:1;
+        text-align:center;
+        .row{
+          height:50%;
+          display:flex;
+          border-right:1rpx solid #ccc;
+          border-bottom:1rpx solid #ccc;
+          view{
+            width:50%;
+            display: flex;
+            flex-direction:column;
+            align-items: center;
+            justify-content: center;
+            border-right:1rpx solid #ccc;
+          }
+        }
+      }
+    }
+  }
+
+</style>
+<template>
+  <view class="container page">
+    <view class='main-slider'>
+        <swiper indicator-dots="{{indicatorDots}}"
+        autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}"
+        circular='{{circular}}'>
+        <block wx:for="{{imgUrls}}" wx:key="*this">
+            <swiper-item>
+            <image src="{{item}}" class="slide-image" width="355" height="150"/>
+            </swiper-item>
+        </block>
+        </swiper>
+    </view>
+    <view class='advanced'>
+      <view class='advanced-one'>
+        <view class='left'>
+          <image style="width: 50px; height: 50px;" src="{{'../statics/imgs/电动汽车.png'}}"></image>
+          <text>共享汽车</text>
+        </view>
+        <view class='right'>
+          <view>
+            <image style="width: 30px; height: 30px; padding-left: 4px;" src="{{'../statics/imgs/充电宝.png'}}"></image>
+            <text>共享充电</text>
+          </view>
+          <view>
+            <image style="width: 30px; height: 30px; padding-left: 4px;" src="{{'../statics/imgs/自行车.png'}}"></image>
+            <text>共享单车</text>
+          </view>
+        </view>
+      </view>
+      <view class='advanced-two'>
+        <view class='left'>
+          <image style="width: 50px; height: 50px;" src="{{'../statics/imgs/电脑.png'}}"></image>
+          <text>共享各种</text>
+        </view>
+        <view class='right'>
+            <view class='row'>
+              <view>
+                <image style="width: 36px; height: 36px;" src="{{'../statics/imgs/电脑.png'}}"></image>
+                <text>共享各种</text>
+              </view>
+              <view class='last'>
+                <image style="width: 36px; height: 36px;" src="{{'../statics/imgs/电脑.png'}}"></image>
+                <text>共享各种</text>
+              </view>
+            </view>
+            <view class='row'>
+              <view>
+                <image style="width: 36px; height: 36px;" src="{{'../statics/imgs/电脑.png'}}"></image>
+                <text>共享各种</text>
+              </view>
+              <view>
+                <image style="width: 36px; height: 36px;" src="{{'../statics/imgs/电脑.png'}}"></image>
+                <text>共享各种</text>
+              </view>
+            </view>
+        </view>
+      </view>
+    </view>
+    <footTab :abscan='abscan'></footTab>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+  import StyleSheet from '../components/styleSheet'
+  import FootTab from '../components/footTab'
+  import Toast from 'wepy-com-toast'
+  import testMixin from '../mixins/test'
+
+  @connect({
+    num (state) {
+      return state.counter.num
+    },
+    asyncNum (state) {
+      return state.counter.asyncNum
+    },
+    sumNum (state) {
+      return state.counter.num + state.counter.asyncNum
+    }
+  })
+
+  export default class Home extends wepy.page {
+    config = {
+      navigationBarTitleText: '共享功能小程序'
+    }
+    components = {
+      toast: Toast,
+      styleSheet: StyleSheet,
+      footTab: FootTab
+    }
+
+    mixins = [testMixin]
+
+    data = {
+      imgUrls: [
+        'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530639196116&di=7223fa804fe625684121d4d8f7daecf6&imgtype=0&src=http%3A%2F%2Fimg.hibor.com.cn%2FsinaImg%2F201708%2FjV1f-fyixias0952376.jpg',
+        'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530639303098&di=d778a62d2adc01f0c886fa47bc54c693&imgtype=0&src=http%3A%2F%2Fi9.hexun.com%2F2017-05-31%2F189417450.jpg',
+        'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530639484851&di=4211f447ef622731caa2108acdee487d&imgtype=0&src=http%3A%2F%2Fww2.sinaimg.cn%2Flarge%2F00601JYkgw1f183uub9g2j30f00a0wgm.jpg'
+      ],
+      indicatorDots: false,
+      autoplay: true,
+      circular: true,
+      interval: 5000,
+      duration: 1000,
+      abscan: ''
+    }
+
+    computed = {
+    }
+
+    methods = {
+    }
+
+    events = {
+    }
+
+    async onLoad() {
+      // console.log(self.locationInfo)
+    }
+  }
+</script>

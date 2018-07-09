@@ -1,0 +1,65 @@
+<style lang="less">
+  .self-footTab {
+    width:100%;
+    height:30px;
+    background-color: #fff;
+    border-top:1rpx solid #ccc;
+    padding-top: 10rpx;
+    display:flex;
+    flex-direction:row;
+    justify-content:space-around;
+    position:fixed;
+    bottom:0;
+    z-index:2;
+    .scan {
+      width: 300rpx;
+      height: 26px;
+      line-height: 26px;
+      border-radius: 15px;
+      color: white;
+      text-align: center;
+      background: #38cc5b;
+      background: linear-gradient(to right, #38cc5b , green);
+    }
+  }
+</style>
+<template>
+    <view class="self-footTab">
+        <navigator url="home"><view class='icon iconfont icon-zhuye'></view></navigator>
+        <view wx:if='{{abscan}}' class='icon iconfont icon-saoma scan' @tap="getScan()">扫码</view>
+        <navigator wx:else url="index"><view class='icon iconfont icon-saoma'></view></navigator>
+        <navigator url="user"><view class='icon iconfont icon-xianxing_youhuiquan'></view></navigator>
+    </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class FootTab extends wepy.component {
+    data = {
+    }
+
+    props = {
+      abscan: String
+    }
+
+    events = {
+
+    }
+
+    methods = {
+      async getScan () {
+        // console.log('扫码')
+        const scanNum = await wepy.scanCode()
+        console.log(scanNum)
+      }
+    }
+
+    onLoad () {
+      console.log(this.abscan)
+    }
+
+    onReady () {
+      console.log(this.abscan)
+    }
+  }
+</script>
