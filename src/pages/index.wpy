@@ -196,25 +196,27 @@
         self.userInfo = self.$parent.globalData.userInfo
       }
       const locationInfo = await wepy.getLocation()
-      self.markers = await self.getMarkers()
       self.locationInfo = locationInfo
       self.$apply()
       console.log(self.markers)
     }
 
     async getMarkers() {
-      const {data} = await wepy.request('http://127.0.0.1:8360/mapInfo/getMarks')
-      const list = data.data
-      let markers = []
-      for (let i = 0; i < list.length; i++) {
-        markers.push({
-          id: i,
-          latitude: list[i].latitude,
-          longitude: list[i].longitude,
-          iconPath: '../statics/imgs/自行车小.png'
-        })
+      const data = await wepy.request('http://127.0.0.1:8360/mapInfo/getMarks')
+      if (data) {
+        const list = data.data.data
+        let markers = []
+        for (let i = 0; i < list.length; i++) {
+          markers.push({
+            id: i,
+            latitude: list[i].latitude,
+            longitude: list[i].longitude,
+            iconPath: '../statics/imgs/自行车小.png'
+          })
+        }
+        self.markers = markers
+        self.apply()
       }
-      return markers
     }
   }
 </script>
